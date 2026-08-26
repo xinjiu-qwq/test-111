@@ -1,66 +1,70 @@
-# test-111 测试站
+# 歆九的博客
 
-测试站：**https://xinjiu-qwq.github.io/test-111/**
-线上后台（Decap CMS）：**https://xinjiu-qwq.github.io/test-111/admin/**
+基于 [Hexo](https://hexo.io/) 的静态博客，采用 [Firefly](https://github.com/LKDenchin/hexo-theme-firefly) 主题，部署在 GitHub Pages。
 
-本目录支持 **三种管理方式**，最终都通过 GitHub Actions 自动构建部署。
+- 在线访问：**https://xinjiu-qwq.github.io**
+- 后台管理（Decap CMS）：**https://xinjiu-qwq.github.io/admin/**
 
-## 一、Decap 网页后台（线上，任意设备可用）
+## 技术栈
 
-1. 打开 https://xinjiu-qwq.github.io/test-111/admin/
-2. 点 **Login with GitHub**（走 Cloudflare Worker 认证）
-3. 在线新建 / 编辑 / 删除文章，保存 = 自动提交到 `source` 分支
-4. GitHub Actions 自动构建 → 1-2 分钟后网站更新
-
-## 二、hexo-admin 本地后台（可视化，需本地运行）
-
-hexo-admin 是 hexo 的本地管理插件（已安装并打过 hexo 8 兼容补丁），提供图形化写作界面：
-
-```powershell
-cd C:\Users\ADMIN\Desktop\1\test-111
-npx hexo server        # 启动本地服务
-```
-
-然后浏览器打开 **http://localhost:4000/test-111/admin/**（注意：地址带 `/test-111/` 前缀，这是项目站点的 root 路径）。
-
-功能：可视化新建/编辑文章、上传图片、管理页面、一键部署。
-⚠️ **不要点界面里的 Deploy 按钮**——它会直接推 public 到 main，绕过 CI 且与 CI 部署冲突；发布请用 `git push`（见下）。
-
-## 三、本地 Hexo 命令行
-
-```powershell
-cd C:\Users\ADMIN\Desktop\1\test-111
-
-# 先同步远程（重要：网页后台可能改过代码）
-git pull
-
-# 新建文章（生成 markdown 后手动编辑内容）
-npx hexo new "文章标题"
-
-# 编辑 source/_posts/xxx.md ...
-# 发布：提交源码，由 CI 自动构建部署
-git add -A
-git commit -m "更新文章"
-git push
-```
-
-## ⚠️ 三种方式共存的关键规则
-
-| 规则 | 原因 |
+| 组件 | 说明 |
 |---|---|
-| **不要用 `npx hexo deploy` / hexo-admin 的 Deploy 按钮** | 会把 public/ 直接推 main，绕过 CI，与 CI 部署互相覆盖 |
-| **本地操作前先 `git pull`** | 网页后台的提交也在 source 分支，不拉取会推送冲突 |
-| **发布统一走 `git push`** | CI 是唯一的部署者 |
+| Hexo 8 | 静态博客框架 |
+| Firefly 主题 | 清新现代，含 Live2D/Spine 看板娘（未启用） |
+| Decap CMS | 网页后台，GitHub 登录，在线写文章/传图 |
+| GitHub Actions | 自动构建部署（push source → 构建 → 发布 main） |
+| Cloudflare Worker | OAuth 登录代理（decap-proxy） |
 
-## 架构
+## 分支说明
 
-- `source` 分支：Hexo 源码（各种方式共同编辑的对象）
-- `main` 分支：构建后的静态网站（GitHub Pages 服务）
-- `.github/workflows/deploy.yml`：自动构建部署工作流
-- `patches/`：hexo-admin 的 hexo 8 兼容补丁（pnpm patch，安装时自动应用）
-- 认证代理：Cloudflare Worker（源码在 `C:\Users\ADMIN\Desktop\1\decap-proxy`）
+- **`source`**：Hexo 源码（本地与后台共同编辑的对象）
+- **`main`**：构建后的静态网站（GitHub Pages 服务，由 CI 自动发布）
+
+## 目录结构
+
+```
+source/
+├── _posts/       文章（.md）
+├── categories/   分类页
+├── tags/         标签页
+├── about/        关于页
+├── friends/      友链页
+├── _data/        站点数据（friends.yml 友链等）
+├── img/          ★ 上传的图片（后台传图 + 站点图片）
+├── music/        （备用放 mp3，自托管音乐用）
+└── admin/        Decap 后台文件（index.html / config.yml）
+themes/firefly/   主题（_config.yml 主题配置、layout 模板、source 资源）
+.github/          工作流（自动部署）
+```
+
+## 本地运行
+
+```bash
+pnpm install
+npx hexo clean && npx hexo generate
+npx hexo server        # http://localhost:4000
+```
+
+## 撰写/发布
+
+- **网页后台**：https://xinjiu-qwq.github.io/admin/ （GitHub 登录，保存后自动部署）
+- **本地**：`npx hexo new "标题"` → 编辑 `source/_posts/*.md` → 提交并 `git push`（触发 CI 自动部署）
+
+> ⚠️ 请勿使用 `npx hexo deploy`（会绕过 CI 直接推 main，与 CI 部署冲突）；发布统一走 `git push`。
+
+## 常用配置
+
+- 站点标题/URL/部署：`_config.yml`
+- 主题色/导航/头像/音乐/评论：`themes/firefly/_config.yml`
+- 后台登录 OAuth / 图片路径：`source/admin/config.yml`
+- 友链：`source/_data/friends.yml`
 
 ## 相关文档
 
-- `CF_DEPLOY.md`：Cloudflare Worker 部署说明
-- `ADMIN_SETUP.md`：Decap 后台使用说明
+- `ADMIN_SETUP.md`：后台使用说明
+- `CF_DEPLOY.md`：Cloudflare 认证部署说明
+- `目录说明.md`（工作区）：详细目录注释
+
+## License
+
+MIT（主题与本站内容按各自协议）
