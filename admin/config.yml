@@ -1,0 +1,36 @@
+# Decap CMS 配置 (测试站)
+# 认证方式: GitHub OAuth 应用 + Cloudflare Worker OAuth 代理 (decap-proxy)
+
+backend:
+  name: github
+  repo: xinjiu-qwq/test-xinjiu.github.io
+  branch: source
+  # Cloudflare Worker OAuth 代理地址
+  base_url: https://decap-proxy.xinjiu-qwq.workers.dev
+  auth_endpoint: auth
+
+locale: zh_Hans
+
+site_url: https://xinjiu-qwq.github.io/test-xinjiu.github.io
+
+# 图片上传位置 (相对 source 分支仓库根目录 = Hexo 根目录)
+media_folder: source/img
+# 项目站点：图片在页面中的 URL 路径需带子路径
+public_folder: /test-xinjiu.github.io/img
+
+collections:
+  - name: posts
+    label: 文章
+    label_singular: 文章
+    folder: source/_posts
+    create: true
+    slug: "{{slug}}"
+    extension: md
+    format: frontmatter
+    sortable_fields: [title, date]
+    fields:
+      - { label: 标题, name: title, widget: string }
+      - { label: 发布日期, name: date, widget: datetime, format: "YYYY-MM-DD HH:mm:ss" }
+      - { label: 标签, name: tags, widget: list, default: [], required: false }
+      - { label: 分类, name: categories, widget: list, default: [], required: false }
+      - { label: 正文, name: body, widget: markdown }
