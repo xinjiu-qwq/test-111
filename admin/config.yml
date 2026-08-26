@@ -3,7 +3,7 @@
 
 backend:
   name: github
-  repo: xinjiu-qwq/test-xinjiu.github.io
+  repo: xinjiu-qwq/test-111
   branch: source
   # Cloudflare Worker OAuth 代理地址
   base_url: https://decap-proxy.xinjiu-qwq.workers.dev
@@ -11,12 +11,12 @@ backend:
 
 locale: zh_Hans
 
-site_url: https://xinjiu-qwq.github.io/test-xinjiu.github.io
+site_url: https://xinjiu-qwq.github.io/test-111
 
 # 图片上传位置 (相对 source 分支仓库根目录 = Hexo 根目录)
 media_folder: source/img
 # 项目站点：图片在页面中的 URL 路径需带子路径
-public_folder: /test-xinjiu.github.io/img
+public_folder: /test-111/img
 
 collections:
   - name: posts
