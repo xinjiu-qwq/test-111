@@ -1,0 +1,22 @@
+diff --git a/api.js b/api.js
+index e5d720ea5e5df10324eb305567cffba55f5c79de..c617aa03f5b6ee44d2393b5937e6062a552054b9 100644
+--- a/api.js
++++ b/api.js
+@@ -116,7 +116,7 @@ module.exports = function (app, hexo) {
+   }
+ 
+   var use = function (path, fn) {
+-    app.use(hexo.config.root + 'admin/api/' + path, function (req, res) {
++    app.use(hexo.config.root + 'admin/api/' + path, function (req, res, next) {
+       var done = function (val) {
+         if (!val) {
+           res.statusCode = 204
+@@ -139,7 +139,7 @@ module.exports = function (app, hexo) {
+         res.statusCode = num
+         res.end(data)
+       }
+-      fn(req, res)
++      fn(req, res, next)
+     })
+   }
+ 

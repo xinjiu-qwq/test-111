@@ -1,2 +1,4 @@
 allowBuilds:
   hexo-util: true
+patchedDependencies:
+  hexo-admin-motherfakerr: patches/hexo-admin-motherfakerr.patch
